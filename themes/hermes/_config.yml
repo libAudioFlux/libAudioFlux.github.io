@@ -1,0 +1,21 @@
+menu:
+    Blog: /
+    GitHub: https://github.com/libAudioFlux
+    Archive: archives/
+    Feed: atom.xml
+
+favicon: icon.png
+logo: logo.png
+
+# Comment
+# e.g disqus: claymcleod 
+disqus: claymcleod
+
+# Analytics
+# ga: UA-xxxxxxxx-x
+
+# Copyright Infomation
+startyear: 2022
+
+# Image Credits
+enable_image_credit: true 

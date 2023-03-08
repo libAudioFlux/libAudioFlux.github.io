@@ -1,0 +1,29 @@
+{
+  "name": "hexo-theme-hermes",
+  "version": "1.0.0",
+  "description": "A hexo theme inspired by vuejs.org",
+  "main": "index.js",
+  "scripts": {
+    "sass": "gulp sass"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/claymcleod/hexo-theme-hermes"
+  },
+  "keywords": [
+    "hexo",
+    "theme",
+    "hermes"
+  ],
+  "author": "Sean Sun",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/claymcleod/hexo-theme-hermes/issues"
+  },
+  "homepage": "https://github.com/claymcleod/hexo-theme-hermes#readme",
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^7.0.1",
+    "gulp-sass": "^4.0.2"
+  }
+}

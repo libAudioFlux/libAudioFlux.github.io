@@ -5,7 +5,7 @@
 # Site
 title: audioFlux
 subtitle: 'Blog'
-description: ''
+description: 'A library for audio and music analysis, feature extraction.'
 keywords:
 author: audioFlux
 language: en
@@ -97,7 +97,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: hermes
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment

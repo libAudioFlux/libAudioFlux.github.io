@@ -1,6 +1,7 @@
 ---
 title: 404 Not Found
-date: 2023-03-08 17:04:40
+comments: false
+permalink: /404.html
 ---
 
 <!DOCTYPE html>

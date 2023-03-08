@@ -1,4 +1,3 @@
-http://libaudioflux.github.io/2023/03/08/My-New-Post/
-http://libaudioflux.github.io/2023/03/07/hello-world/
+http://libaudioflux.github.io/post/hello-world/
+http://libaudioflux.github.io/post/audioFlux-introduce/
 http://libaudioflux.github.io/
-http://libaudioflux.github.io/tags/Test/

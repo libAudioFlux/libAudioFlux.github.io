@@ -1,3 +1,2 @@
-http://libaudioflux.github.io/post/hello-world/
 http://libaudioflux.github.io/post/audioFlux-introduce/
 http://libaudioflux.github.io/

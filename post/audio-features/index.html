@@ -1,113 +1,12 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Introducing audioFlux: a deep learning tool for audio feature extraction · audioFlux</title><meta name="description" content="Introducing audioFlux: a deep learning tool for audio feature extraction - audioFlux"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/icon.png"><link rel="stylesheet" href="/css/hermes.css"><link rel="search" type="application/opensearchdescription+xml" href="http://libAudioFlux.github.io/atom.xml" title="audioFlux"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="audioFlux" type="application/atom+xml">
-</head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/logo.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/libAudioFlux/audioFlux" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://audioflux.top" target="_blank">DOC</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">FEED</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Introducing audioFlux: a deep learning tool for audio feature extraction</h1><div class="post-info">Mar 8, 2023</div><div class="post-content"><p><img src="/post/audio-features/logo.png"></p>
-<h3 id="Introduce"><a href="#Introduce" class="headerlink" title="Introduce"></a>Introduce</h3><p><strong><code>audioFlux</code></strong>  is a library implemented in C and Python, which provides systematic, comprehensive and multi-dimensional feature extraction and combination in the audio field. In combination with various deep learning network models, it carries out business research and development in the audio field. Next, it briefly describes its relevant functions from six aspects: time-frequency transform, reassign spectrogram, cepstrum coefficient, deconvolution, spectral features, and music information retrieval.</p>
-<h3 id="Time-Frequency-Transform"><a href="#Time-Frequency-Transform" class="headerlink" title="Time-Frequency Transform"></a>Time-Frequency Transform</h3><p><strong><code>audioFlux</code></strong>  in the field of time-frequency analysis, the following general transform algorithms (supporting all subsequent frequency scale types) are included:</p>
-<span id="more"></span>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="refresh" content="0;url='https://github.com/libAudioFlux/audioFlux'" />
 
-<p><strong>BFT</strong> — Based Fourier Transform. The equivalent short-time Fourier transform (STFT) is generally based on this to realize the well-known mel spectrum. The Fourier transform with overlapping translation and window in the time domain is generally 1&#x2F;4 of the length of the overlapping transform. The Gaussian window is also called Gabor transform. The length of the window function can be adjusted to facilitate the simulation of time-frequency analysis characteristics. In addition to providing standard mel&#x2F;bar&#x2F;erb and other spectra, the BFT algorithm also supports the complex spectrum of mel scale types, It also supports the rearrangement of mel equiscale spectrum.</p>
-<p><strong>NSGT</strong> — Non-Stationary Gabor Transform. Similar to STFT (short time Fourier transform) with Gaussian window, the difference is that the window function length and t establish a non-stationary relationship. Relative to STFT, it can achieve better analysis of non-stationary states in steady-state signals. The better onset endpoint detection effect is often based on such spectrum calculation, and can be used as an efficient way to achieve CQT. In this algorithm, the octave frequency scale type of NSGT transform is the efficient implementation of CQT.</p>
-<p><strong>CWT</strong> — Continuous Wavelet Transform. Multi-resolution time-frequency analysis: mathematically, the base of Fourier transform is infinite sin&#x2F;cos function, while the base of wavelet transform is finite and very small wave function, The general expression of wave function is <img src="/post/audio-features/f1.png"> among them, a determines the scaling scale of frequency domain, b time translation scale, and establishes adaptive time-frequency analysis. Compared with the fixed time-frequency resolution of STFT, it has the characteristics of high frequency resolution in low frequency band and high time resolution in high frequency band, which is very suitable for non-stationary signal analysis, and supports the commonly used Morse, Morlet, Bump, Pual, Meyer and other wave functions.</p>
-<p><strong>PWT</strong> — Pseudo Wavelet Transform. Based on the similar effect of wavelet transform realized by Fourier transform, the efficient algorithm of CWT calculates filterBank and does dot operation for frequency domain wavelet function and frequency domain data. If the wavelet function is regarded as a special window function, it can produce CWT-like effect, namely pseudo-wavelet transform. If the window function establishes parameters of frequency band (not yet implemented in the library), it can be equivalent to wavelet transform.</p>
-<p>The above conversion function supports all the following frequency scale types:</p>
-<ul>
-<li><strong>Linear</strong> — Standard linear frequency band spectrum, half of the result of short-time Fourier transform is linear scale spectrum, and the scale is sampling rate&#x2F;sampling sample, which is the minimum frequency resolution.</li>
-<li><strong>Linsapce</strong> — The spectrum of the user-defined frequency band can be larger than the linear frequency band, which is equivalent to the time domain downsampling.</li>
-<li><strong>Mel</strong> — Mel scale spectrogram, one of the most commonly used types of spectrogram in audio, is based on the characteristics of low frequency sensitivity and high frequency insensitivity of human hearing, and the log-like compressed linear scale.</li>
-<li><strong>Bark</strong> — Bark scale spectrum diagram is more suitable for human hearing than Mel scale.</li>
-<li><strong>ERB</strong> — Equivalent rectangular bandwidth scale spectrum, which is more consistent with human hearing than Barker scale.</li>
-<li><strong>Octave</strong> — Octave scale spectrum.</li>
-<li><strong>Log</strong> — Logarithmic scale spectrum.</li>
-</ul>
-<p>The following is a simple comparison diagram of different frequency scales under BFT transform.<br><img src="/post/audio-features/spec1.png"></p>
-<p>The following is a simple comparison diagram of different CWT wave functions.<br><img src="/post/audio-features/spec2.png"></p>
-<p>The following algorithms can be used as independent transform (multiple frequency scale types are not supported):</p>
-<ul>
-<li><strong>CQT</strong> — Constant Q transform, which is a transform with constant frequency band ratio, is often used in music. Chroma features are often calculated based on this to analyze harmony.</li>
-<li><strong>VQT</strong> — Variable Q transform.</li>
-<li><strong>ST</strong> — S transform&#x2F;Stockwell transform, similar to wavelet transform, is an extreme special case of wavelet transform thought, which can be used to detect and analyze some extreme abrupt signals, such as earthquakes, tsunamis, etc. Compared with NSGT, it also adds Gaussian windows, but establishes a scaling relationship between frequency and time.</li>
-<li><strong>FST</strong> — Fast S transform, discrete base 2 implementation of S transform.</li>
-<li><strong>DWT</strong> — Discrete wavelet transform, compared with CWT, frequency based on 2 transform.</li>
-<li><strong>WPT</strong> — Wavelet packet transform, also known as wavelet packet decomposition, can perform detailed and approximate decomposition of signals. It is a way of signal separation and synthesis, and can be used for noise reduction, modal structure analysis and other businesses.</li>
-<li><strong>SWT</strong> — Stationary wavelet transform, similar to wavelet packet transform, the decomposed signal is the same length as the original signal.</li>
-</ul>
-<p>The following is a simple comparison of different scales under CQT and NSGT transform.<br><img src="/post/audio-features/spec3.png"></p>
-<blockquote>
-<p>NSGT-Octave is clearer and more focused than CQT</p>
-</blockquote>
-<p>Chroma is a higher-level feature based on spectrum, belonging to the category of musical scale system. The scale for non-musical tones is worse than that for musical tones. At present, it supports the spectrum types of Chroma features:</p>
-<ul>
-<li>CQT</li>
-<li>BFT-linear</li>
-<li>BFT-octave</li>
-</ul>
-<p>Here is a simple comparison of Chroma.<br><img src="/post/audio-features/spec4.png"></p>
-<blockquote>
-<p>The spectrum with different frequency scales has their own application value. For some business situations, these spectrum maps with different scales can be combined to form a large feature set to participate in network training.</p>
-<p>The spectrum diagram is called amplitude spectrum, power spectrum, logarithmic spectrum&#x2F;dB spectrum according to the type of value abs, square, log and other nonlinear operations. The logarithmic spectrum is generally used more in deep learning.</p>
-</blockquote>
-<h3 id="Reassign-Spectrogram"><a href="#Reassign-Spectrogram" class="headerlink" title="Reassign Spectrogram"></a>Reassign Spectrogram</h3><p>The synchrosqueezing or reassignment is a technique for sharpening a time-frequency representation, <strong><code>audioFlux</code></strong> includes the following algorithms:</p>
-<ul>
-<li>reassign — reassign transform for STFT.</li>
-<li>synsq — reassign data use CWT data.</li>
-<li>wsst — reassign transform for CWT.</li>
-</ul>
-<p>Below is a spectrum diagram and the effect diagram after corresponding rearrangement.<br><img src="/post/audio-features/spec5.png"></p>
-<blockquote>
-<p>The effect after reassign is better than that before reassign.</p>
-<p>Since the reassign effect is so good, can you rearrange it several times based on the last result? How does this work? <strong><code>audioFlux</code></strong> reassign related algorithms provide multiple reassign mechanisms, and the specific effects can be compared by referring to the document.</p>
-</blockquote>
-<h3 id="Cepstrum-Coefficient"><a href="#Cepstrum-Coefficient" class="headerlink" title="Cepstrum Coefficient"></a>Cepstrum Coefficient</h3><p>Similar to mfcc (Mel frequency cepstrum coefficient) for mel spectrum, this feature service belongs to pitch removal, which is a feature reflecting the physical structure of pronunciation. It is typically used for voice recognition related services, and can be used for different instrument classification, structure refinement and other business model training.</p>
-<p>The entire <strong><code>audioFlux</code></strong> in the project spectrum system, except mfcc and corresponding delta&#x2F;deltaDelta, all types of spectrum cepstrum coefficients, namely xxcc, are supported:</p>
-<ul>
-<li>lfcc</li>
-<li>gtcc</li>
-<li>bfcc</li>
-<li>cqcc</li>
-<li>……</li>
-</ul>
-<p>The cepstrum coefficients of different spectrum types represent the pitch correlation of different spectrum types, and have their own application values. For example, the paper of gtcc reflects that the phoneme effect in speech recognition business is better than that of mfcc, and the classification and structure refinement business of cqcc for musical instruments are far better than that of mfcc.</p>
-<p>The following is a comparison chart of different spectral cepstrum coefficients for guitar music and audio.<br><img src="/post/audio-features/spec6.png"></p>
-<blockquote>
-<p>In the initial stage of guitar music, cqcc performs best, and in the subsequent stage of continuous stability, gtcc performs better.</p>
-</blockquote>
-<h3 id="Deconvolution"><a href="#Deconvolution" class="headerlink" title="Deconvolution"></a>Deconvolution</h3><p>In mathematics, deconvolution is the inverse operation of convolution, which can be used as an algorithm for signal decomposition. For the spectrum, the two decomposed data can be represented as the formant spectrum and the pitch spectrum. Compared with mfcc, formant is a more general physical structural feature of pronunciation.</p>
-<p>In <strong><code>audioFlux</code></strong> , the deconvolution operation of all types of spectrum is supported, and its value lies in that for pitch related services, the model inference can be more accurate after the formant interference is removed; For services with structure-related features, the pitch can be removed to avoid the interference of model training.</p>
-<p>The following is the deconvolution effect of mel spectrum for guitar 880hz audio.<br><img src="/post/audio-features/spec7.png"></p>
-<blockquote>
-<p>You can see the obvious separation effect between the formant part（timbre） and the pitch part of the guitar.</p>
-</blockquote>
-<h3 id="Spectral-Feature"><a href="#Spectral-Feature" class="headerlink" title="Spectral Feature"></a>Spectral Feature</h3><p>In <strong><code>audioFlux</code></strong> , there are dozens of spectral-related features, including those based on timbre correlation, statistical correlation, spectral flux correlation, singular value correlation, and so on.</p>
-<p>For example:</p>
-<ul>
-<li>flatness</li>
-<li>skewness</li>
-<li>crest</li>
-<li>slop</li>
-<li>rolloff</li>
-<li>……</li>
-<li>centroid</li>
-<li>spread</li>
-<li>kurtosis</li>
-<li>……</li>
-<li>flux</li>
-<li>hfc</li>
-<li>mkl</li>
-<li>……</li>
-<li>……</li>
-</ul>
-<p>For all spectral features provided by <strong><code>audioFlux</code></strong> , more specific functional descriptions, examples, formulas, etc., please refer to <a target="_blank" rel="noopener" href="http://audioflux.top/">official documents</a>.</p>
-<p>The following is a comparison of some spectral feature.<br><img src="/post/audio-features/spec8.png"></p>
-<h4 id="Music-Information-Retrieval"><a href="#Music-Information-Retrieval" class="headerlink" title="Music Information Retrieval"></a>Music Information Retrieval</h4><p><strong><code>audioFlux</code></strong>  provides mir-related fields such as pitch estimation, onset detection, hpss (harmonic percussion separation) and other related business algorithms.</p>
-<p>The pitch estimation is based on YIN, STFT and other related algorithms. The following is the detection effect picture for a vocal practice pitch.<br><img src="/post/audio-features/spec9.png"></p>
-<blockquote>
-<p>Red is the actual reference pitch, and blue is the estimated pitch.</p>
-</blockquote>
-<p>The onset detection includes algorithms based on spectrum flux, novelty, and so on. The following is an endpoint detection rendering of a guitar sweep accompaniment.<br><img src="/post/audio-features/spec10.png"></p>
-<blockquote>
-<p>The red dotted line in the middle time domain image is superimposed by the endpoint detection position.</p>
-</blockquote>
-<p>HPSS includes median filtering, non-negative matrix decomposition (NMF) and other algorithms. The following is a separation effect that includes guitar playing and metronome audio. The upper part of the time domain effect, and the lower part corresponds to the frequency domain effect.<br><img src="/post/audio-features/spec11.png"></p>
-</div></article></div></main><footer><div class="paginator"><a class="next" href="/post/audioFlux-introduce/">NEXT</a></div><div class="copyright"><p>© 2022 - 2023 <a href="http://libAudioFlux.github.io">audioFlux</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/claymcleod/hexo-theme-hermes" target="_blank">hexo-theme-hermes</a>. </p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-DG0JNF2WF8"></script><script>window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-DG0JNF2WF8');</script></body></html>
+        <title>Redirecting to https://github.com/libAudioFlux/audioFlux</title>
+    </head>
+    <body>
+        Redirecting to <a href="https://github.com/libAudioFlux/audioFlux">https://github.com/libAudioFlux/audioFlux</a>.
+    </body>
+</html>

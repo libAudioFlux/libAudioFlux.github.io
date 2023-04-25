@@ -1,0 +1,422 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Benchmark for Audio Libraries: Audioflux, TorchAudio, Librosa, Essentia, etc · audioFlux</title><meta name="description" content="Benchmark for Audio Libraries: Audioflux, TorchAudio, Librosa, Essentia, etc - audioFlux"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/icon.png"><link rel="stylesheet" href="/css/hermes.css"><link rel="search" type="application/opensearchdescription+xml" href="http://libAudioFlux.github.io/atom.xml" title="audioFlux"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="audioFlux" type="application/atom+xml">
+</head><body><div class="wrap"><header><a class="logo-link" href="/"><img src="/logo.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a class="nav-list-link" href="/" target="_self">BLOG</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://github.com/libAudioFlux/audioFlux" target="_blank">GITHUB</a></li><li class="nav-list-item"><a class="nav-list-link" href="https://audioflux.top" target="_blank">DOC</a></li><li class="nav-list-item"><a class="nav-list-link" href="/archives/" target="_self">ARCHIVE</a></li><li class="nav-list-item"><a class="nav-list-link" href="/atom.xml" target="_self">FEED</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Benchmark for Audio Libraries: Audioflux, TorchAudio, Librosa, Essentia, etc</h1><div class="post-info">Apr 25, 2023</div><div class="post-content"><h2 id="audioFlux"><a href="#audioFlux" class="headerlink" title="audioFlux"></a>audioFlux</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/libAudioFlux/audioFlux"><strong><code>audioFlux</code></strong></a> is a library implemented in C and Python, which provides systematic, comprehensive and multi-dimensional feature extraction and combination in the audio field. In combination with various deep learning network models, it carries out business research and development in the audio field.</p>
+</blockquote>
+<h2 id="Introduce"><a href="#Introduce" class="headerlink" title="Introduce"></a>Introduce</h2><p>In the field of deep learning for audio, the mel spectrogram is the most commonly used audio feature. The performance of mel spectrogram features can be benchmarked and compared using audio feature extraction libraries such as the following:</p>
+<span id="more"></span>
+
+<table>
+<thead>
+<tr>
+<th>Library</th>
+<th>Language</th>
+<th>Version</th>
+<th>About</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/libAudioFlux/audioFlux">audioFlux</a></td>
+<td>C&#x2F;Python</td>
+<td>0.1.5</td>
+<td>A library for audio and music analysis, feature extraction</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/pytorch/audio">torchaudio</a></td>
+<td>Python</td>
+<td>0.11.0</td>
+<td>Data manipulation and transformation for audio signal processing, powered by PyTorch</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/librosa/librosa">librosa</a></td>
+<td>Python</td>
+<td>0.10.0</td>
+<td>C++ library for audio and music analysis, description and synthesis, including Python bindings</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/MTG/essentia">essentia</a></td>
+<td>C++&#x2F;Python</td>
+<td>2.0.1</td>
+<td>Python library for audio and music analysis</td>
+</tr>
+</tbody></table>
+<ul>
+<li>audioFlux: developed in C with a Python wrapper, it has different bridging processes for different platforms, and supports <strong>OpenBLAS</strong>, <strong>MKL</strong>, etc.</li>
+<li>torchaudio: developed in PyTorch, which is optimized for CPUs and uses <strong>MKL</strong> as its backend. This evaluation does not include the GPU version of PyTorch.</li>
+<li>librosa: developed purely in Python, mainly based on <strong>NumPy</strong> and <strong>SciPy</strong>, with NumPy using <strong>OpenBLAS</strong> as its backend.</li>
+<li>essentia: developed in C++ with a Python wrapper, it uses <strong>Eigen</strong> and <strong>FFTW</strong> as its backend.</li>
+</ul>
+<p>There are many factors that can affect the performance evaluation results, including CPU architecture, operating system, compilation system, selection of basic linear algebra libraries, and usage of project APIs, all of which can have a certain impact on the evaluation results.</p>
+<p>For the most common mel features in the audio field, the major performance bottlenecks are FFT computation, matrix computation, and multi-threaded parallel processing, while minor bottlenecks include algorithmic business implementation and Python packaging.</p>
+<ul>
+<li>Regarding FFT computation, librosa uses SciPy’s fftpack for accelerated FFT computation, which is slower than FFTW3, MKL, and Accelerate.    </li>
+<li>Regarding matrix computation, MKL is faster than OpenBLAS, while OpenBLAS is faster than Eigen.    </li>
+<li>Regarding multi-threaded parallel processing, it depends on whether each project has support for it.</li>
+</ul>
+<h2 id="Scripts"><a href="#Scripts" class="headerlink" title="Scripts"></a>Scripts</h2><p>If you want to compare and test multiple libraries, you can use:  </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">python run_benchmark.py -p audioflux,torchaudio,librosa -r 1000 -er 10  -t 1,5,10,100,500,1000,2000,3000</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>-p:  The library name, list</li>
+<li>-r:  The number of sample data, number</li>
+<li>-er: The number of <code>run_xxx.py</code>  calls, number</li>
+<li>-t:  The time of each sample data, list</li>
+</ul>
+<p>If you want to test a single library, you can use:    </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">python run_audioflux.py -r 1000 -t 1,5,10,100,500,1000,2000,3000</span></span><br></pre></td></tr></table></figure>
+
+<p>If you want to see more usage instructions, you can execute <code>python run_xxx.py --help</code></p>
+<h3 id="Notice"><a href="#Notice" class="headerlink" title="Notice"></a>Notice</h3><p>In the field of audio, libraries related to audio feature extraction have their own functional characteristics and provide different types of features. This evaluation does not aim to test all the performance comparisons of their feature extraction in detail. However, as the mel spectrum is one of the most important and fundamental features, all of these libraries support it.</p>
+<p>There are many factors that can affect the performance evaluation results, such as CPU architecture, operating system, compilation system, choice of basic linear algebra library, and the usage of project APIs, which will have a certain impact on the evaluation results. In order to be as fair as possible and to better reflect actual business needs, the following conditions are based on in this evaluation:</p>
+<ol>
+<li>macOS&#x2F;Linux operating system, three types of CPUs: Intel&#x2F;AMD&#x2F;M1.</li>
+<li>The libraries use the latest official release version or the latest official source code compiled with high performance support, and the fastest one is selected.</li>
+<li>In terms of API usage, the official standards are followed, and “warming up” is used for each corresponding method of the libraries (the first execution time is not counted), and the execution time of the initialization is not counted.</li>
+<li>In terms of data length, various actual business considerations are taken into account when selecting the test data.</li>
+</ol>
+<blockquote>
+<p>When the data is short, the first execution time of most libraries may be relatively slow. To reflect actual business needs and to be fair, this first execution time is not counted. If the library API design provides initialization functions, they will be created and repeatedly called in actual business scenarios, and the initialization execution time is also not counted. </p>
+</blockquote>
+<h3 id="Warn"><a href="#Warn" class="headerlink" title="Warn"></a>Warn</h3><blockquote>
+<p>⚠️ When using Python scientific computing related libraries such as Conda, PyTorch, TensorFlow, XGBoost, LightGBM, etc., almost all of them use Intel Math Kernel Library (MKL). MKL uses OpenMP for parallel acceleration, but only one instance of OpenMP can exist in the same process. When these libraries are used together, it is best to link all libraries to the same location of libomp, otherwise an error will occur. Modifying the environment variables according to the prompt may result in slower program execution and unreliable results. Relevant tools can be used to rewrite the libomp linking path of the related libraries.</p>
+</blockquote>
+<h2 id="Performance"><a href="#Performance" class="headerlink" title="Performance"></a>Performance</h2><h3 id="Base-benchmark"><a href="#Base-benchmark" class="headerlink" title="Base benchmark"></a>Base benchmark</h3><p>Use audioFlux&#x2F;torchaudio&#x2F;librosa script, for AMD&#x2F;Intel&#x2F;M1 CPUs and Linux&#x2F;macOS operating system. </p>
+<p>The time required to calculate the mel-spectrogram for 1000 sample data according to a TimeStep of 1&#x2F;5&#x2F;10&#x2F;100&#x2F;500&#x2F;1000&#x2F;2000&#x2F;3000. Where fft_len&#x3D;2048, slide_len&#x3D;512, sampling_rate&#x3D;32000.   </p>
+<h4 id="Linux-AMD"><a href="#Linux-AMD" class="headerlink" title="Linux - AMD"></a>Linux - AMD</h4><pre><code>- OS: Ubuntu 20.04.4 LTS
+- CPU: AMD Ryzen Threadripper 3970X 32-Core Processor
+</code></pre>
+<p><img src="/post/benchmark/linux_amd_1.png"></p>
+<table>
+<thead>
+<tr>
+<th>TimeStep</th>
+<th>audioflux</th>
+<th>torchaudio</th>
+<th>librosa</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>0.04294s</td>
+<td>0.07707s</td>
+<td>2.41958s</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.14878s</td>
+<td>1.05589s</td>
+<td>3.52610s</td>
+</tr>
+<tr>
+<td>10</td>
+<td>0.18374s</td>
+<td>0.83975s</td>
+<td>3.46499s</td>
+</tr>
+<tr>
+<td>100</td>
+<td>0.67030s</td>
+<td>0.61876s</td>
+<td>6.63217s</td>
+</tr>
+<tr>
+<td>500</td>
+<td>0.94893s</td>
+<td>1.29189s</td>
+<td>16.45968s</td>
+</tr>
+<tr>
+<td>1000</td>
+<td>1.43854s</td>
+<td>2.23126s</td>
+<td>27.78358s</td>
+</tr>
+<tr>
+<td>2000</td>
+<td>3.08714s</td>
+<td>4.10869s</td>
+<td>45.12714s</td>
+</tr>
+<tr>
+<td>3000</td>
+<td>4.90343s</td>
+<td>5.86299s</td>
+<td>51.62876s</td>
+</tr>
+</tbody></table>
+<h4 id="Linux-Intel"><a href="#Linux-Intel" class="headerlink" title="Linux - Intel"></a>Linux - Intel</h4><pre><code>- OS: Ubuntu 20.04.4 LTS
+- CPU: Intel(R) Core(TM) i7-6850K CPU @ 3.60GHz
+</code></pre>
+<p><img src="/post/benchmark/linux_intel_1.png"></p>
+<table>
+<thead>
+<tr>
+<th>TimeStep</th>
+<th>audioflux</th>
+<th>torchaudio</th>
+<th>librosa</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>0.08106s</td>
+<td>0.11043s</td>
+<td>5.51295s</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.11654s</td>
+<td>0.16005s</td>
+<td>5.77631s</td>
+</tr>
+<tr>
+<td>10</td>
+<td>0.29173s</td>
+<td>0.15352s</td>
+<td>6.13656s</td>
+</tr>
+<tr>
+<td>100</td>
+<td>1.18150s</td>
+<td>0.39958s</td>
+<td>10.61641s</td>
+</tr>
+<tr>
+<td>500</td>
+<td>2.23883s</td>
+<td>1.58323s</td>
+<td>28.99823s</td>
+</tr>
+<tr>
+<td>1000</td>
+<td>4.42723s</td>
+<td>3.98896s</td>
+<td>51.97518s</td>
+</tr>
+<tr>
+<td>2000</td>
+<td>8.73121s</td>
+<td>8.28444s</td>
+<td>61.13923s</td>
+</tr>
+<tr>
+<td>3000</td>
+<td>13.07378s</td>
+<td>12.14323s</td>
+<td>70.06395s</td>
+</tr>
+</tbody></table>
+<h4 id="macOS-Intel"><a href="#macOS-Intel" class="headerlink" title="macOS - Intel"></a>macOS - Intel</h4><pre><code>- OS: 12.6.1 (21G217)
+- CPU: 3.8GHz 8‑core 10th-generation Intel Core i7, Turbo Boost up to 5.0GHz
+</code></pre>
+<p><img src="/post/benchmark/mac_x86_1.png"></p>
+<table>
+<thead>
+<tr>
+<th>TimeStep</th>
+<th>audioflux</th>
+<th>torchaudio</th>
+<th>librosa</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>0.07605s</td>
+<td>0.06451s</td>
+<td>1.70139s</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.14946s</td>
+<td>0.08464s</td>
+<td>1.86964s</td>
+</tr>
+<tr>
+<td>10</td>
+<td>0.16641s</td>
+<td>0.10762s</td>
+<td>2.00865s</td>
+</tr>
+<tr>
+<td>100</td>
+<td>0.46902s</td>
+<td>0.83551s</td>
+<td>3.28890s</td>
+</tr>
+<tr>
+<td>500</td>
+<td>1.08860s</td>
+<td>5.05824s</td>
+<td>8.98265s</td>
+</tr>
+<tr>
+<td>1000</td>
+<td>2.64029s</td>
+<td>9.78269s</td>
+<td>18.24391s</td>
+</tr>
+<tr>
+<td>2000</td>
+<td>5.40025s</td>
+<td>15.08991s</td>
+<td>33.68184s</td>
+</tr>
+<tr>
+<td>3000</td>
+<td>7.92596s</td>
+<td>24.84823s</td>
+<td>47.35941s</td>
+</tr>
+</tbody></table>
+<h4 id="macOS-M1"><a href="#macOS-M1" class="headerlink" title="macOS - M1"></a>macOS - M1</h4><pre><code>- OS: 12.4 (21F79)
+- CPU: Apple M1
+</code></pre>
+<p><img src="/post/benchmark/mac_arm_1.png"></p>
+<table>
+<thead>
+<tr>
+<th>TimeStep</th>
+<th>audioflux</th>
+<th>torchaudio</th>
+<th>librosa</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>0.06110s</td>
+<td>0.06874s</td>
+<td>2.22518s</td>
+</tr>
+<tr>
+<td>5</td>
+<td>0.23444s</td>
+<td>0.07922s</td>
+<td>2.55907s</td>
+</tr>
+<tr>
+<td>10</td>
+<td>0.20691s</td>
+<td>0.11090s</td>
+<td>2.71813s</td>
+</tr>
+<tr>
+<td>100</td>
+<td>0.68694s</td>
+<td>0.63625s</td>
+<td>4.74433s</td>
+</tr>
+<tr>
+<td>500</td>
+<td>1.47420s</td>
+<td>3.37597s</td>
+<td>13.83887s</td>
+</tr>
+<tr>
+<td>1000</td>
+<td>3.00926s</td>
+<td>6.76275s</td>
+<td>25.24646s</td>
+</tr>
+<tr>
+<td>2000</td>
+<td>5.99781s</td>
+<td>12.69573s</td>
+<td>47.84029s</td>
+</tr>
+<tr>
+<td>3000</td>
+<td>8.76306s</td>
+<td>19.03391s</td>
+<td>69.40428s</td>
+</tr>
+</tbody></table>
+<h3 id="Summarize"><a href="#Summarize" class="headerlink" title="Summarize"></a>Summarize</h3><p>In summary, from the performance comparison results of the three libraries, librosa takes the most time, which is also in line with common sense.<br>On linux&#x2F;amd processors, audioflux is slightly faster than torchaudio, but slightly slower on linux&#x2F;intel.<br>On the macOS system, for large-size sample data, audioflux is faster than torchaudio, and intel is more obvious than m1; for small-size sample data, torchaudio is faster than audioflux.   </p>
+<p>⚠️ Although the development of benchmark is attempted to be as objective and fair as possible, every benchmarks have their drawbacks, and are limited to particular testing procedures, datasets and platforms. And also, this benchmark does not compare additional features that a library may support, or other APIs,  cross-platform, etc. We encourage users to benchmarks with their own data sets and platforms.  </p>
+<h3 id="Other-Test"><a href="#Other-Test" class="headerlink" title="Other Test"></a>Other Test</h3><h4 id="Server-Performance"><a href="#Server-Performance" class="headerlink" title="Server Performance"></a>Server Performance</h4><p>Each sample data is 128ms(sampling rate: 32000, data length: 4096).</p>
+<p>The total time spent on extracting features for 1000 sample data.</p>
+<pre><code>- OS: Ubuntu 20.04.4 LTS
+- CPU: AMD Ryzen Threadripper 3970X 32-Core Processor
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th><a target="_blank" rel="noopener" href="https://github.com/libAudioFlux/audioFlux">audioFlux</a></th>
+<th><a target="_blank" rel="noopener" href="https://github.com/librosa/librosa">librosa</a></th>
+<th><a target="_blank" rel="noopener" href="https://github.com/tyiannak/pyAudioAnalysis">pyAudioAnalysis</a></th>
+<th><a target="_blank" rel="noopener" href="https://github.com/jameslyons/python_speech_features">python_speech_features</a></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mel</td>
+<td>0.777s</td>
+<td>2.967s</td>
+<td>–</td>
+<td>–</td>
+</tr>
+<tr>
+<td>MFCC</td>
+<td>0.797s</td>
+<td>2.963s</td>
+<td>0.805s</td>
+<td>2.150s</td>
+</tr>
+<tr>
+<td>CQT</td>
+<td>5.743s</td>
+<td>21.477s</td>
+<td>–</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Chroma</td>
+<td>0.155s</td>
+<td>2.174s</td>
+<td>1.287s</td>
+<td>–</td>
+</tr>
+</tbody></table>
+<h4 id="Mobile-Performance"><a href="#Mobile-Performance" class="headerlink" title="Mobile Performance"></a>Mobile Performance</h4><p>For 128ms audio data per frame(sampling rate: 32000, data length: 4096).</p>
+<p>The time spent on extracting features for 1 frame data.</p>
+<table>
+<thead>
+<tr>
+<th>Mobile</th>
+<th>iPhone 13 Pro</th>
+<th>iPhone X</th>
+<th>Honor V40</th>
+<th>OPPO Reno4 SE 5G</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mel</td>
+<td>0.249ms</td>
+<td>0.359ms</td>
+<td>0.313ms</td>
+<td>0.891ms</td>
+</tr>
+<tr>
+<td>MFCC</td>
+<td>0.249ms</td>
+<td>0.361ms</td>
+<td>0.315ms</td>
+<td>1.116ms</td>
+</tr>
+<tr>
+<td>CQT</td>
+<td>0.350ms</td>
+<td>0.609ms</td>
+<td>0.786ms</td>
+<td>1.779ms</td>
+</tr>
+<tr>
+<td>Chroma</td>
+<td>0.354ms</td>
+<td>0.615ms</td>
+<td>0.803ms</td>
+<td>1.775ms</td>
+</tr>
+</tbody></table>
+</div></article></div></main><footer><div class="paginator"><a class="next" href="/post/audio-features/">NEXT</a></div><div class="copyright"><p>© 2022 - 2023 <a href="http://libAudioFlux.github.io">audioFlux</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/claymcleod/hexo-theme-hermes" target="_blank">hexo-theme-hermes</a>. </p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=G-DG0JNF2WF8"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-DG0JNF2WF8');</script></body></html>

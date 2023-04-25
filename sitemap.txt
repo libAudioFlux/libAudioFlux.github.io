@@ -1,4 +1,6 @@
+http://libaudioflux.github.io/post/benchmark/
 http://libaudioflux.github.io/github.html
 http://libaudioflux.github.io/post/audio-features/
 http://libaudioflux.github.io/404.html
 http://libaudioflux.github.io/
+http://libaudioflux.github.io/tags/Benchmark/

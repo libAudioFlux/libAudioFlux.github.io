@@ -9,7 +9,7 @@ description: 'A library for audio and music analysis, feature extraction.'
 keywords:
 author: audioFlux
 language: en
-timezone: 'America/New_York'
+timezone: 'Asia/Shanghai'
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
